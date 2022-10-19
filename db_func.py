@@ -25,18 +25,21 @@ def insert_data(engine):
     session.close()
 
 
-def print_publisher_by_id(engine):
+def show_shops_with_publisher(engine):
     Session = sessionmaker(bind=engine)
     session = Session()
-    try:
-        p_id = int(input('Введите id издателя: '))
-    except ValueError:
-        print('Введите натуральное число!')
-        return
-    a = session.query(Publisher).filter(Publisher.id == p_id).first()
+    p_id = input('Input Publisher name: ')
+    subq = session.query(Publisher).filter(Publisher.name.ilike(p_id.lower())).subquery()
+    subq2 = session.query(Book).join(subq, Book.id_publisher == subq.c.id).subquery()
+    subq3 = session.query(Stock).join(subq2, subq2.c.id == Stock.id_book).subquery()
+    subq4 = session.query(Shop).join(subq3, subq3.c.id_shop == Shop.id).all()
     session.commit()
-    if a:
-        print(a)
+    if subq4:
+        print(f'Shops where You can buy books of publisher "{p_id}":')
+        for c in subq4:
+            print(c)
     else:
-        print('Издателя с данным id не существует')
+        print(f'You can not buy books of "{p_id}" or wrong name')
+
+
     session.close()

@@ -1,7 +1,7 @@
 import sqlalchemy
 import configparser
 from models import create_tables, Publisher, Sale, Shop, Stock, Book
-from db_func import insert_data, print_publisher_by_id
+from db_func import insert_data, show_shops_with_publisher
 
 if __name__ == '__main__':
     # извлекаем данные из config.ini
@@ -20,4 +20,4 @@ if __name__ == '__main__':
     insert_data(engine=engine)
 
     # выводим издателя по id
-    print_publisher_by_id(engine=engine)
+    show_shops_with_publisher(engine=engine)
